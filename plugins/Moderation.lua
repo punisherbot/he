@@ -52,10 +52,10 @@ local function automodadd(msg)
    end
 end
 
-local function modadd(msg)
+local function gpadd(msg)
     -- superuser and admins only (because sudo are always has privilege)
     if not is_admin(msg) then
-        return "You're not admin"
+        return "You're not Global admin"
     end
     local data = load_data(_config.moderation.data)
   if data[tostring(msg.to.id)] then
@@ -76,10 +76,10 @@ local function modadd(msg)
   return 'Group has been added.'
 end
 
-local function modrem(msg)
+local function gprem(msg)
     -- superuser and admins only (because sudo are always has privilege)
     if not is_admin(msg) then
-        return "You're not admin"
+        return "You're not Global admin"
     end
     local data = load_data(_config.moderation.data)
     local receiver = get_receiver(msg)
@@ -129,12 +129,12 @@ local function admin_promote(receiver, member_username, member_id)
   end
 
   if data['admins'][tostring(member_id)] then
-    return send_large_msg(receiver, member_username..' is already as admin.')
+    return send_large_msg(receiver, member_username..' is already as Global admin.')
   end
   
   data['admins'][tostring(member_id)] = member_username
   save_data(_config.moderation.data, data)
-  return send_large_msg(receiver, '@'..member_username..' has been promoted as admin.')
+  return send_large_msg(receiver, '@'..member_username..' has been promoted as Global admin.')
 end
 
 local function admin_demote(receiver, member_username, member_id)
@@ -145,13 +145,13 @@ local function admin_demote(receiver, member_username, member_id)
   end
 
   if not data['admins'][tostring(member_id)] then
-    return send_large_msg(receiver, member_username..' is not an admin.')
+    return send_large_msg(receiver, member_username..' is not an Global admin.')
   end
 
   data['admins'][tostring(member_id)] = nil
   save_data(_config.moderation.data, data)
 
-  return send_large_msg(receiver, 'Admin '..member_username..' has been demoted.')
+  return send_large_msg(receiver, 'Global Admin '..member_username..' has been demoted.')
 end
 
 local function username_id(cb_extra, success, result)
@@ -164,13 +164,13 @@ local function username_id(cb_extra, success, result)
       if vusername == member then
         member_username = member
         member_id = v.id
-        if mod_cmd == 'promote' then
+        if mod_cmd == 'mpromote' then
             return promote(receiver, member_username, member_id)
-        elseif mod_cmd == 'demote' then
+        elseif mod_cmd == 'mdemote' then
             return demote(receiver, member_username, member_id)
-        elseif mod_cmd == 'adminprom' then
+        elseif mod_cmd == 'gprom' then
             return admin_promote(receiver, member_username, member_id)
-        elseif mod_cmd == 'admindem' then
+        elseif mod_cmd == 'gdem' then
             return admin_demote(receiver, member_username, member_id)
         end
       end
@@ -220,22 +220,22 @@ function run(msg, matches)
   end
   local mod_cmd = matches[1]
   local receiver = get_receiver(msg)
-  if matches[1] == 'modadd' then
+  if matches[1] == 'gpadd' then
     return modadd(msg)
   end
-  if matches[1] == 'modrem' then
+  if matches[1] == 'gprem' then
     return modrem(msg)
   end
-  if matches[1] == 'promote' and matches[2] then
+  if matches[1] == 'mpromote' and matches[2] then
     if not is_momod(msg) then
-        return "Only moderator can promote"
+        return "Only moderator can promote member"
     end
   local member = string.gsub(matches[2], "@", "")
     chat_info(receiver, username_id, {mod_cmd= mod_cmd, receiver=receiver, member=member})
   end
-  if matches[1] == 'demote' and matches[2] then
+  if matches[1] == 'mdemote' and matches[2] then
     if not is_momod(msg) then
-        return "Only moderator can demote"
+        return "Only moderator can demote member"
     end
     if string.gsub(matches[2], "@", "") == msg.from.username then
         return "You can't demote yourself"
@@ -246,14 +246,14 @@ function run(msg, matches)
   if matches[1] == 'modlist' then
     return modlist(msg)
   end
-  if matches[1] == 'adminprom' then
+  if matches[1] == 'gprom' then
     if not is_admin(msg) then
-        return "Only sudo can promote user as admin"
+        return "Only sudo can promote user as global admin"
     end
   local member = string.gsub(matches[2], "@", "")
     chat_info(receiver, username_id, {mod_cmd= mod_cmd, receiver=receiver, member=member})
   end
-  if matches[1] == 'admindem' then
+  if matches[1] == 'gdem' then
     if not is_admin(msg) then
         return "Only sudo can promote user as admin"
     end
@@ -283,8 +283,8 @@ return {
           "!modlist : List of moderators",
           },
       admin = {
-          "!modadd : Add group to moderation list",
-          "!modrem : Remove group from moderation list",
+          "!gpadd : Add group to moderation list",
+          "!gprem : Remove group from moderation list",
           },
       sudo = {
           "!adminprom <username> : Promote user as admin (must be done from a group)",
@@ -292,13 +292,13 @@ return {
           },
       },
   patterns = {
-    "^!(modadd)$",
-    "^!(modrem)$",
-    "^!(promote) (.*)$",
-    "^!(demote) (.*)$",
+    "^!(gpadd)$",
+    "^!(gpadd)$",
+    "^!(mpromote) (.*)$",
+    "^!(mdemote) (.*)$",
     "^!(modlist)$",
-    "^!(adminprom) (.*)$", -- sudoers only
-    "^!(admindem) (.*)$", -- sudoers only
+    "^!(gprom) (.*)$", -- sudoers only
+    "^!(gdem) (.*)$", -- sudoers only
     "^!(adminlist)$",
     "^!!tgservice (chat_add_user)$",
     "^!!tgservice (chat_created)$",
