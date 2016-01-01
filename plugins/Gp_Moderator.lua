@@ -176,7 +176,7 @@ end
 
 function run(msg, matches)
     --vardump(msg)
-    if matches[1] == 'creategroup' and matches[2] then
+    if matches[1] == 'creategp' and matches[2] then
         group_name = matches[2]
         return create_group(msg)
     end
@@ -303,7 +303,7 @@ end
 return {
   description = "Plugin to manage group chat.", 
   usage = {
-    "!creategroup <group_name> : Create a new group (admin only)",
+    "!creategp <group_name> : Create a new group (admin only)",
     "!setabout <description> : Set group description",
     "!about : Read group description",
     "!setrules <rules> : Set group rules",
@@ -316,7 +316,7 @@ return {
     "!group settings : Show group settings"
     },
   patterns = {
-    "^!(creategroup) (.*)$",
+    "^!(creategp) (.*)$",
     "^!(setabout) (.*)$",
     "^!(about)$",
     "^!(setrules) (.*)$",
