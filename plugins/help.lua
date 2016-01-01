@@ -109,8 +109,8 @@ local function telegram_help()
     end
   end
   text = text..'\n'..'There are '..i..' plugins help available.'
-  text = text..'\n'..'Write "!help [plugin name]" or "!help [plugin number]" for more info.'
-  text = text..'\n'..'Or "!help all" to show all info.'
+  text = text..'\n'..'Join Or channel for the news.'
+  text = text..'\n'..'Channel : @INFERNALchannel sudo @ArashINFERNAL.'
   return text
 end
  
