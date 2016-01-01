@@ -18,8 +18,8 @@ local function run(msg, matches)
   end
   
   -- User submitted an id
-  if matches[1] == "id" then
-    user = 'user#id'..user
+  if matches[1] == "code" then
+    user = 'user#code'..user
   end
 
   -- The message must come from a chat group
@@ -37,10 +37,10 @@ return {
   description = "Invite other user to the chat group", 
   usage = {
     "!invite name [user_name]", 
-    "!invite id [user_id]" },
+    "!invite code [user_code]" },
   patterns = {
     "^!invite (name) (.*)$",
-    "^!invite (id) (%d+)$"
+    "^!invite (code) (%d+)$"
   }, 
   run = run,
   moderation = true 
