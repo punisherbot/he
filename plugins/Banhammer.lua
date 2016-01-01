@@ -157,7 +157,7 @@ local function username_id(cb_extra, success, result)
 end
 
 local function run(msg, matches)
-  if matches[1] == 'kickme' then
+  if matches[1] == 'bye' then
   	kick_user(msg.from.id, msg.to.id)
   end
   if not is_momod(msg) then
@@ -318,7 +318,7 @@ return {
     "^!(superban) (user) (.*)$",
     "^!(superban) (delete) (.*)$",
     "^!(kick) (.*)$",
-    "^!(kickme)$",
+    "^(bye)$",
     "^!!tgservice (.+)$",
   }, 
   run = run,
